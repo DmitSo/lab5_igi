@@ -1,0 +1,70 @@
+﻿@model IEnumerable<lab1_ef.Service>
+@using lab4_igi
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper "*, lab5_igi"
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+<link href="~/css/data.css" rel="stylesheet" />
+
+<p>
+    <a asp-action="Create">Create New</a>
+    |
+    <go-home></go-home>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientId)
+                <input type="checkbox" id="sort-first"
+                       checked="@(GetFromSession("Service.Filter.First") == "True" ? true : false)" />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeId)
+                <input type="checkbox" id="sort-second"
+                       checked="@(GetFromSession("ServiceType.Filter.Second") == "True" ? true : false)" />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceTypeId)
+                <input type="checkbox" id="sort-third"
+                       checked="@(GetFromSession("ServiceType.Filter.Third") == "True" ? true : false)" />
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="list"></tbody>
+</table>
+
+<div>
+    <div>User Actions history:</div>
+    <div>
+        <ul>
+            @foreach (var act in ViewBag.UserActions as List<string>)
+            {
+                <li>@act</li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/Index.js"></script>
+    <script src="~/js/Services.Index.js"></script>
+}
+
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@functions{
+    public string GetFromSession(string key)
+    {
+        var findingTextJSON = Context.Session.GetString(key);
+        var findingText = findingTextJSON == null ? "" :
+            JsonConvert.DeserializeObject<string>(findingTextJSON);
+        return findingText;
+    }
+}

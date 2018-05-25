@@ -6,18 +6,18 @@
         var currentModel = Model[i] as lab1_ef.Service;
         <tr id="@currentModel.ClientId @currentModel.EmployeeId @currentModel.ServiceTypeId" class="item-line">
             <td>
-                @currentModel.ClientId
+                @currentModel.Client?.Name
             </td>
             <td>
-                @currentModel.EmployeeId
+                @currentModel.Employee?.Name
             </td>
             <td>
-                @currentModel.ServiceTypeId
+                @currentModel.ServiceType?.Name
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@currentModel.ClientId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@currentModel.ClientId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@currentModel.ClientId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@currentModel.ServiceId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@currentModel.ServiceId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@currentModel.ServiceId">Delete</a>
             </td>
         </tr>
     }

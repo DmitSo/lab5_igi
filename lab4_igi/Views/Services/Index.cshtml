@@ -19,17 +19,17 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ClientId)
+                @Html.DisplayNameFor(model => model.Client)
                 <input type="checkbox" id="sort-first"
                        checked="@(GetFromSession("Service.Filter.First") == "True" ? true : false)" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EmployeeId)
+                @Html.DisplayNameFor(model => model.Employee)
                 <input type="checkbox" id="sort-second"
                        checked="@(GetFromSession("ServiceType.Filter.Second") == "True" ? true : false)" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ServiceTypeId)
+                @Html.DisplayNameFor(model => model.ServiceType)
                 <input type="checkbox" id="sort-third"
                        checked="@(GetFromSession("ServiceType.Filter.Third") == "True" ? true : false)" />
             </th>

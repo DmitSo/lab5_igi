@@ -38,7 +38,7 @@ namespace lab4_igi.Controllers
 
         public ActionResult SortedList(bool first, int? pageStart = 0)
         {
-            var sortedList = _context.Clients.ToList();
+            var sortedList = _context.Clients.Include(c => c.Room).ToList();
             if (first)
             {
                 sortedList.Sort(new ClientComparer());
@@ -90,10 +90,11 @@ namespace lab4_igi.Controllers
 
             ViewBag.Name = instance.Name;
             ViewBag.RoomId = instance.RoomId;
+            ViewBag.Rooms = _context.Rooms.ToList();
             ViewBag.Passport = instance.Passport;
             ViewBag.DepartureDate = instance.DepartureDate;
 
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId");
+            ViewData["RoomId"] = new SelectList(_context.Rooms.Where(r => r.Clients.Count == 0), "RoomId", "RoomNo");
             return View();
         }
 
@@ -114,7 +115,7 @@ namespace lab4_igi.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId", client.RoomId);
+            ViewData["RoomId"] = new SelectList(_context.Rooms.Where(r => r.Clients.Count == 0), "RoomId", "RoomNo", client.RoomId);
             return View(client);
         }
 
@@ -132,7 +133,7 @@ namespace lab4_igi.Controllers
             {
                 return NotFound();
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId", client.RoomId);
+            ViewData["RoomId"] = new SelectList(_context.Rooms.Where(r => r.Clients.Count == 0), "RoomId", "RoomNo", client.RoomId);
             return View(client);
         }
 
@@ -170,7 +171,7 @@ namespace lab4_igi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId", client.RoomId);
+            ViewData["RoomId"] = new SelectList(_context.Rooms.Where(r => r.Clients.Count == 0), "RoomId", "RoomNo", client.RoomId);
             return View(client);
         }
 

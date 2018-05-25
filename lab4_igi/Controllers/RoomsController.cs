@@ -36,7 +36,7 @@ namespace lab4_igi.Controllers
         
         public ActionResult SortedList(bool first, int? pageStart = 0)
         {
-            var sortedList = _context.Rooms.ToList();
+            var sortedList = _context.Rooms.Include(r => r.RoomType).ToList();
             if (first)
             {
                 sortedList.Sort(new RoomsComparer());
@@ -84,7 +84,7 @@ namespace lab4_igi.Controllers
             ViewBag.RoomNo = room.RoomNo;
             ViewBag.Capacity = room.Capacity;
             ViewBag.RoomType = room.RoomType?.Name;
-            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Id");
+            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Name");
             return View();
         }
 
@@ -104,7 +104,7 @@ namespace lab4_igi.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Id", room.RoomTypeId);
+            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Name", room.RoomTypeId);
             return View(room);
         }
 
@@ -122,7 +122,7 @@ namespace lab4_igi.Controllers
             {
                 return NotFound();
             }
-            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Id", room.RoomTypeId);
+            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Name", room.RoomTypeId);
             return View(room);
         }
 
@@ -144,6 +144,7 @@ namespace lab4_igi.Controllers
             {
                 try
                 {
+                    room.CostDate = DateTime.Now;
                     _context.Update(room);
                     await _context.SaveChangesAsync();
                 }
@@ -160,7 +161,7 @@ namespace lab4_igi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Id", room.RoomTypeId);
+            ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "Id", "Name", room.RoomTypeId);
             return View(room);
         }
 

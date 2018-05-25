@@ -37,7 +37,8 @@ namespace lab4_igi.Controllers
 
         public ActionResult SortedList(bool first, bool second, bool third, int? pageStart = 0)
         {
-            var sortedList = _context.Services.ToList();
+            var sortedList = _context.Services.Include(s => s.Client).
+                Include(s => s.Employee).Include(s => s.ServiceType).ToList();
             if ((first & second & third))
             {
                 sortedList.Sort(new ServiceComparer());
@@ -104,13 +105,13 @@ namespace lab4_igi.Controllers
         {
             var serviceString = HttpContext.Session.GetString("Service");
             var service = serviceString == null ? new Service() : JsonConvert.DeserializeObject<Service>(serviceString);
-            ViewBag.ClientId = service.ClientId;
-            ViewBag.ServiceTypeId = service.ServiceTypeId;
-            ViewBag.EmployeeId = service.EmployeeId;
-
-            ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId");
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
-            ViewData["ServiceTypeId"] = new SelectList(_context.ServiceTypes, "ServiceTypeId", "ServiceTypeId");
+            ViewBag.Clients = _context.Clients.ToList();
+            ViewBag.Employees = _context.Employees.ToList();
+            ViewBag.ServiceTypes = _context.ServiceTypes.ToList();
+            
+            ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "Name");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Name");
+            ViewData["ServiceTypeId"] = new SelectList(_context.ServiceTypes, "ServiceTypeId", "Name");
             return View();
         }
 
@@ -120,8 +121,9 @@ namespace lab4_igi.Controllers
         [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ServicesSaveForm]
-        public async Task<IActionResult> Create([Bind("ServiceId,ClientId,EmployeeId,ServiceTypeId")] Service service)
+        //[ServicesSaveForm]
+        public async Task<IActionResult> Create([Bind("ServiceId,ClientId,EmployeeId,ServiceTypeId")] Service service, 
+            string cli, string emp, string st)
         {
             if (ModelState.IsValid)
             {
@@ -149,9 +151,9 @@ namespace lab4_igi.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "ClientId", service.ClientId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", service.EmployeeId);
-            ViewData["ServiceTypeId"] = new SelectList(_context.ServiceTypes, "ServiceTypeId", "ServiceTypeId", service.ServiceTypeId);
+            ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "Name", service.ClientId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Name", service.EmployeeId);
+            ViewData["ServiceTypeId"] = new SelectList(_context.ServiceTypes, "ServiceTypeId", "Name", service.ServiceTypeId);
             return View(service);
         }
 
@@ -162,7 +164,8 @@ namespace lab4_igi.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ServiceId,ClientId,EmployeeId,ServiceTypeId")] Service service)
+        public async Task<IActionResult> Edit(int id, [Bind("ServiceId,ClientId,EmployeeId,ServiceTypeId")] Service service, 
+            string cli, string emp, string st)
         {
             if (id != service.ServiceId)
             {

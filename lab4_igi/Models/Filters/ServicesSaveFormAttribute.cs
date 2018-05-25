@@ -21,13 +21,14 @@ namespace Lab4.Models.Filters
             var clientId = context.HttpContext.Request.Form.FirstOrDefault(p => p.Key == "ClientId").Value.ToString();
             var employeeId = context.HttpContext.Request.Form.FirstOrDefault(p => p.Key == "EmployeeId").Value.ToString();
             var serviceTypeId = context.HttpContext.Request.Form.FirstOrDefault(p => p.Key == "ServiceTypeId").Value.ToString();
-
-            var entityStr = JsonConvert.SerializeObject(new Service()
-            {
-                ClientId = Int32.Parse(clientId),
-                EmployeeId = Int32.Parse(employeeId),
-                ServiceTypeId = Int32.Parse(serviceTypeId)
-            });
+            
+            string entityStr = JsonConvert.SerializeObject(new Service()
+                {
+                    ClientId = Int32.Parse(clientId),
+                    EmployeeId = Int32.Parse(employeeId),
+                    ServiceTypeId = Int32.Parse(serviceTypeId)
+                });
+            
             context.HttpContext.Session.SetString("Service", entityStr);
         }
     }
